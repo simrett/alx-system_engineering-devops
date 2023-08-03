@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Use 'ip' command to get IPv4 addresses and display them
+ip -4 address | awk '/inet / {print $2}' | cut -d '/' -f 1
