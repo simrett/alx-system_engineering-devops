@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-# displays active network connections along with their listening ports and the PID name of the owning process.
-netstat -lp
