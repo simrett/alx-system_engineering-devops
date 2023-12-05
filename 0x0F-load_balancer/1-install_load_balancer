@@ -1,22 +1,45 @@
 #!/usr/bin/env bash
 # script for configuring HAProxy load balancer server
-
-sudo apt-get update -y
-sudo apt-get install haproxy -y
-
-server_config=\
-"
-frontend  haproxynode
+MY_ID=496
+CONFIG_FILE=/etc/haproxy/haproxy.cfg
+INPUT_LINE="
+frontend simmie_frontend
         bind *:80
         mode http
-        default_backend backendnodes
-backend  backendnodes
+        default_backend simmie_backend
+
+backend simmie_backend
         balance roundrobin
-        mode http
-	server 264687-web-01 34.227.92.219:80 check
+        option forwardfor # ensure forwarded request includes client ip
+        server 264687-web-01 34.227.92.219
         server 264687-web-02 54.236.50.82:80 check
 "
-echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
-echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
-sudo haproxy -c -f /etc/haproxy/haproxy.cfg
-sudo service haproxy restart
+
+# check if hostname is correct
+if [[ $(hostname) =~ ^$MY_ID-lb-[0-9]+ ]]; then
+    echo 'hostname configured properly'
+else
+    >&2 echo 'hostname not configured properly...'
+    >&2 echo 'please set hostname to pattern: 264687-lb-<server_id>...'
+    >&2 echo 'Example: sudo hostnamectl set-hostname 264687-lb-<insert_server_id_here>'
+fi
+
+# check if HAProxy was previously configured
+if [ "$(grep -o "$INPUT_LINE" $CONFIG_FILE | wc -l)" != 0 ]; then
+        echo 'HAProxy already configured to script specs :)...'
+        # restart HAProxy
+        service haproxy restart
+else
+        # install HAProxy Version 1.8
+        apt-get -y install software-properties-common
+        add-apt-repository -y ppa:vbernat/haproxy-1.8
+        apt-get -y update
+        apt-get -y install haproxy=1.8.\*
+
+        # configure HAProxyd
+
+        printf "%s" "$INPUT_LINE" >> $CONFIG_FILE
+
+        # start HAProxy
+        service haproxy start
+fi
