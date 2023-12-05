@@ -1,5 +1,5 @@
 #install flask on puppet link
 package { 'flask':
-  ensure   => '2.1.0',
+  ensure   => 'latest',
   provider => 'pip3',
 }
