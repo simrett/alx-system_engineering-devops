@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # script for configuring HAProxy load balancer server
-MY_ID=496
+MY_ID=264687
 CONFIG_FILE=/etc/haproxy/haproxy.cfg
 INPUT_LINE="
 frontend simmie_frontend
