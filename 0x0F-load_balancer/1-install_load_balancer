@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # script for configuring HAProxy load balancer server
+set -e
 MY_ID=264687
 CONFIG_FILE=/etc/haproxy/haproxy.cfg
 INPUT_LINE="
@@ -11,7 +12,7 @@ frontend simmie_frontend
 backend simmie_backend
         balance roundrobin
         option forwardfor # ensure forwarded request includes client ip
-        server 264687-web-01 34.227.92.219
+        server 264687-web-01 34.227.92.219:80 check
         server 264687-web-02 54.236.50.82:80 check
 "
 
@@ -28,7 +29,7 @@ fi
 if [ "$(grep -o "$INPUT_LINE" $CONFIG_FILE | wc -l)" != 0 ]; then
         echo 'HAProxy already configured to script specs :)...'
         # restart HAProxy
-        service haproxy restart
+        systemctl haproxy restart
 else
         # install HAProxy Version 1.8
         apt-get -y install software-properties-common
@@ -41,5 +42,5 @@ else
         printf "%s" "$INPUT_LINE" >> $CONFIG_FILE
 
         # start HAProxy
-        service haproxy start
+        systemctl haproxy start
 fi
