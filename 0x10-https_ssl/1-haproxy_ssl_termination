@@ -35,18 +35,17 @@ defaults
 
 frontend simmie_frontend
         bind *:80
+	http-request add-header X-Forwarded-Proto http
         mode http
         default_backend simmie_backend
 frontend simmie_https_frontend
-        bind *:443 ssl crt /etc/letsencrypt/live/www.realsimmie.tech/fullchain.pem
-        reqadd X-Forwarded-Proto:\ https
-        acl letsencrypt-acl path_beg /.well-known/acme-challenge/
-        use_backend letsencrypt-backend if letsencrypt-acl
+        bind *:443 ssl crt /etc/letsencrypt/archive/www.realsimmie.tech/www.realsimmie.tech.pem
+        mode http
+        http-request add-header X-Forwarded-Proto https
         default_backend simmie_backend
 
 backend  simmie_backend
         balance roundrobin
-        redirect scheme https if !{ ssl_fc }
         mode http
         server 264687-web-01 34.227.92.219:80 check
         server 264687-web-02 54.236.50.82:80 check
