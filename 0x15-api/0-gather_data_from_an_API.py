@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-"""script for parsing web data from an api
+"""
+Fetching todo lists for an employee from a REST API
 """
 if __name__ == "__main__":
     import json
