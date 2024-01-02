@@ -24,12 +24,12 @@ if __name__ == "__main__":
         response = requests.get(url)
         objs = json.loads(response.text)
         for obj in objs:
-                json_data = {
+            json_data = {
                     "task": obj.get('title'),
                     "completed": obj.get('completed'),
                     "username": username
-                }
-                builder[user_id_key].append(json_data)
+                    }
+            builder[user_id_key].append(json_data)
 
     # write the data to the file
     json_encoded_data = json.dumps(builder)
