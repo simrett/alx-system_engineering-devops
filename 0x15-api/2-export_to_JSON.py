@@ -8,7 +8,7 @@ if __name__ == "__main__":
     base_url = 'https://jsonplaceholder.typicode.com/'
     try:
         employee_id = sys.argv[1]
-    except:
+    except IndexError:
         print('Usage: {} employee_id'.format(sys.argv[0]))
         exit(1)
 
@@ -25,12 +25,12 @@ if __name__ == "__main__":
     user_id_key = str(employee_id)
     builder = {user_id_key: []}
     for obj in objs:
-            json_data = {
+        json_data = {
                 "task": obj.get('title'),
                 "completed": obj.get('completed'),
                 "username": user_name
-            }
-            builder[user_id_key].append(json_data)
+                }
+        builder[user_id_key].append(json_data)
     json_encoded_data = json.dumps(builder)
     with open('{}.json'.format(employee_id), 'w') as myFile:
         myFile.write(json_encoded_data)
