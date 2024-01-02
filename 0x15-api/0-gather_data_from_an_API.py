@@ -8,7 +8,7 @@ if __name__ == "__main__":
     base_url = 'https://jsonplaceholder.typicode.com/'
     try:
         employee_id = sys.argv[1]
-    except:
+    except IndexError:
         print('Usage: {} employee_id'.format(sys.argv[0]))
         exit(1)
 
